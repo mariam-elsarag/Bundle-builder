@@ -1,0 +1,238 @@
+@import "tailwindcss";
+/* ---------------------- Start Font ------------------------------ */
+@font-face {
+  font-family: "Gilroy-Medium";
+  src: url("/assets/font/Gilroy-Medium.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gilroy-SemiBold";
+  src: url("/assets/font/Gilroy-SemiBold.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gilroy-Regular";
+  src: url("/assets/font/gilroy-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Norms Pro";
+  src: url("/assets/font/TTNormsPro-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+.headline_lg {
+  font-family: "TT Norms Pro";
+  font-weight: 700;
+  font-size: 17px;
+}
+.title_2xl {
+  font-family: "Gilroy-SemiBold";
+  font-size: 22px;
+  font-weight: 400;
+}
+.title_xl {
+  font-family: "Gilroy-SemiBold";
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.title_lg {
+  font-family: "Gilroy-SemiBold";
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+}
+.title_md {
+  font-family: "Gilroy-SemiBold";
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+}
+.title_sm {
+  font-family: "Gilroy-SemiBold";
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.label_lg {
+  font-family: "Gilroy-Regular";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 16px;
+}
+.body_lg {
+  font-family: "Gilroy-Medium";
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.body_md {
+  font-family: "Gilroy-Medium";
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+}
+.body_sm {
+  font-family: "Gilroy-Medium";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+.body_xs {
+  font-family: "Gilroy-Medium";
+  font-size: 10px;
+  font-weight: 400;
+}
+@theme {
+  --color-primary-50: #edf4ff;
+  --color-primary-700: #4e2fd2;
+
+  --color-secondary-700: #0000ee;
+
+  --color-tertiary-400: #1df0bb;
+  --color-tertiary-500: #0aa288;
+
+  --color-error-500: #d8392b;
+
+  --color-grey-500: #cccccc;
+
+  --color-neutral-50: #f0f4f7;
+  --color-neutral-500: #525963;
+  --color-neutral-600: #575757;
+  --color-neutral-700: #484848;
+  --color-neutral-900: #0b0d10;
+  --color-neutral-950: #1f1f1f;
+
+  --color-disabled: #e6ebf0;
+
+  --color-info-500: #0367fdff;
+
+  --color-warning-500: #ff7b00ff;
+}
+/* ---------------------- End Font ------------------------------ */
+/* ---------------------- Start utils ------------------------------ */
+button {
+  outline: none;
+  box-shadow: none;
+}
+.Container {
+  max-width: 1440px;
+  padding-right: 122px;
+  padding-left: 122px;
+  width: 100%;
+  margin: auto;
+}
+@media (max-width: 640px) {
+  .Container {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
+@layer utilities {
+  .page_py {
+    @apply py-[49.36px];
+  }
+}
+/* ---------------------- End utils ------------------------------ */
+/* ---------------------- Start react toast style ------------------------------ */
+
+.Toastify__toast-container .Toastify__toast {
+  color: var(--color-neutral-900);
+  font-family: "Gilroy-Regular";
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.Toastify__toast-container .Toastify__progress-bar--wrp {
+  height: 2.5px !important;
+}
+
+.Toastify__toast-container .Toastify__close-button {
+  display: none;
+}
+
+/* Shared toast styles */
+.Toastify__toast-container .Toastify__toast--success,
+.Toastify__toast-container .Toastify__toast--info,
+.Toastify__toast-container .Toastify__toast--error,
+.Toastify__toast-container .Toastify__toast--warning {
+  border-radius: 12px;
+  padding: 12px;
+  overflow: hidden !important;
+}
+
+.Toastify__toast-container .Toastify__toast {
+  position: relative;
+}
+
+.Toastify__toast-container .Toastify__toast::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  width: 4px;
+  height: 100%;
+}
+
+/* Success */
+.Toastify__toast-container .Toastify__toast--success .Toastify__toast-icon svg {
+  fill: var(--color-tertiary-500);
+}
+
+.Toastify__toast-container .Toastify__toast--success::before {
+  background-color: var(--color-tertiary-500);
+}
+
+/* Info */
+.Toastify__toast-container .Toastify__toast--info .Toastify__toast-icon svg {
+  fill: var(--color-info-500);
+}
+
+.Toastify__toast-container .Toastify__toast--info::before {
+  background-color: var(--color-info-500);
+}
+
+/* Error */
+.Toastify__toast-container .Toastify__toast--error .Toastify__toast-icon svg {
+  fill: var(--color-error-500);
+}
+
+.Toastify__toast-container .Toastify__toast--error::before {
+  background-color: var(--color-error-500);
+}
+
+/* Warning */
+.Toastify__toast-container .Toastify__toast--warning .Toastify__toast-icon svg {
+  fill: var(--color-warning-500);
+}
+
+.Toastify__toast-container .Toastify__toast--warning::before {
+  background-color: var(--color-warning-500);
+}
+
+/* Progress bars */
+.Toastify__toast-container .Toastify__progress-bar--success {
+  background-color: var(--color-tertiary-500) !important;
+}
+
+.Toastify__toast-container .Toastify__progress-bar--info {
+  background-color: var(--color-info-500) !important;
+}
+
+.Toastify__toast-container .Toastify__progress-bar--error {
+  background-color: var(--color-error-500) !important;
+}
+
+.Toastify__toast-container .Toastify__progress-bar--warning {
+  background-color: var(--color-warning-500) !important;
+}
+/* ---------------------- end react toast style ------------------------------ */
