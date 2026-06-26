@@ -39,14 +39,10 @@ export class Product {
 
   @OneToMany(() => Variant, (variant) => variant.product, {
     cascade: true,
-    eager: true,
   })
   variants: Variant[];
 
-  @ManyToOne(() => Category, (category) => category.products, {
-    cascade: true,
-    eager: true,
-  })
+  @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
   @CreateDateColumn({ type: 'timestamp' })

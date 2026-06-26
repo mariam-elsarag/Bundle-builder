@@ -1,34 +1,21 @@
 import { createContext, useContext } from "react";
 
 const initialSelections = {
-  cameras: [
+  categories: [
     {
-      id: "Wyze-Cam-v4",
-      name: "Wyze Cam v4",
-      selectedVariantId: "white",
-      price: 34.98,
-      priceBeforeDiscount: 39.98,
-
-      variants: {
-        id: "white",
-        label: "White",
-        thumbnail: "./assets/images/products/wyz_cam_pan_v3_white.png",
-        quantity: 1,
-      },
-    },
-    {
-      id: "Wyze-Cam-Pan-v3",
-      name: "Wyze Cam Pan v3",
-      selectedVariantId: "white",
-      price: 34.98,
-      priceBeforeDiscount: 39.98,
-
-      variants: {
-        id: "white",
-        label: "White",
-        thumbnail: "./assets/images/products/wyz_cam_pan_v3_white.png",
-        quantity: 2,
-      },
+      categoryId: 1,
+      products: [
+        {
+          productId: 2,
+          variantId: 2,
+          quantity: 1,
+        },
+        {
+          productId: 3,
+          variantId: 5,
+          quantity: 2,
+        },
+      ],
     },
   ],
 };

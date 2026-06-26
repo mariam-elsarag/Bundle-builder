@@ -18,6 +18,12 @@ export class Category {
   @Index()
   name: string;
 
+  @Column({ type: 'int', default: 0, unique: true })
+  order: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  icon: string | null;
+
   @Column({ type: 'varchar', length: 255, unique: true })
   title: string;
 

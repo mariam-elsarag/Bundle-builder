@@ -20,8 +20,18 @@ export class CategoriesService {
       Object.assign(category, body);
       return this.categoryRepository.save(category);
     }
+    const lastCategory = await this.categoryRepository.findOne({
+      order: {
+        order: 'DESC',
+      },
+    });
 
-    return this.categoryRepository.save(body);
+    const newCategory = this.categoryRepository.create({
+      ...body,
+      order: lastCategory ? lastCategory.order + 1 : 1,
+    });
+
+    return this.categoryRepository.save(newCategory);
   }
 
   findAll() {
