@@ -17,8 +17,8 @@ export const INITIAL_CART = [
     categoryOrder: 4,
     products: [{ productIndex: 0, variantIndex: 0, quantity: 2 }],
   },
-  {
-    categoryOrder: 2,
-    products: [{ productIndex: 0, variantIndex: 0, quantity: 1 }],
-  },
 ];
+
+export const INITIAL_CART_PACKAGE = {
+  packageId: 2,
+};

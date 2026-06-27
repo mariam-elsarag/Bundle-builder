@@ -7,6 +7,6 @@ export class HomeController {
 
   @Get('steps')
   findSteps() {
-    return this.homeService.getProductsByCategories();
+    return this.homeService.getHome();
   }
 }

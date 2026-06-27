@@ -8,6 +8,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { HomeModule } from './home/home.module';
 import { CartModule } from './cart/cart.module';
+import { PackageModule } from './package/package.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { CartModule } from './cart/cart.module';
     HomeModule,
 
     CartModule,
+
+    PackageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

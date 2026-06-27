@@ -24,9 +24,6 @@ export class Category {
   @Column({ type: 'varchar', length: 255, nullable: true })
   icon: string | null;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
-  title: string;
-
   @OneToMany(() => Product, (product) => product.category, {
     onDelete: 'CASCADE',
   })
