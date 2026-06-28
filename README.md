@@ -42,9 +42,10 @@ If you change the backend port, make sure to also update the frontend API config
 
 ### 3. Run backend
 
-````bash
+```bash
 npm run start:dev
-``
+```
+
 ---
 
 ## 🎨 Frontend Setup
@@ -53,7 +54,7 @@ npm run start:dev
 cd client
 npm install
 npm run dev
-````
+```
 
 ---
 
