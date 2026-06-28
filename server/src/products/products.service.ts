@@ -1,17 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
-import { Variant } from './entities/variant.entity';
-import { ProductResponseDto } from './dto/product-response.dto';
 import { plainToInstance } from 'class-transformer';
-import { Category } from 'src/categories/entities/category.entity';
+import { HomeStep } from 'src/home/entities/step.entities';
+import { Repository } from 'typeorm';
+import { CreateProductDto } from './dto/create-product.dto';
+import { ProductResponseDto } from './dto/product-response.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { Product } from './entities/product.entity';
+import { Variant } from './entities/variant.entity';
 
 @Injectable()
 export class ProductsService {
@@ -21,22 +17,22 @@ export class ProductsService {
     @InjectRepository(Variant)
     private readonly productVariantRepository: Repository<Variant>,
 
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(HomeStep)
+    private readonly setpRepository: Repository<HomeStep>,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    const { variants, categoryId, ...productData } = createProductDto;
+    const { variants, stepId, ...productData } = createProductDto;
 
-    const category = await this.categoryRepository.findOne({
-      where: { id: categoryId },
+    const step = await this.setpRepository.findOne({
+      where: { id: stepId },
     });
-    if (!category) {
-      throw new NotFoundException('Category Id not found ');
+    if (!step) {
+      throw new NotFoundException('Step Id not found ');
     }
     const product = await this.prodcutRepository.save({
       ...productData,
-      category: category,
+      step: step,
     });
 
     if (variants?.length) {

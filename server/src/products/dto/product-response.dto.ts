@@ -42,28 +42,24 @@ export class ProductResponseDto {
   @Expose()
   @Transform(({ obj }) => {
     const price = Number(obj.price);
-    const discountRate = Number(obj.discountRate);
+    const discountRate = Number(obj.discountRate || 0);
 
-    if (!discountRate || discountRate <= 0) {
+    if (discountRate <= 0) {
       return price;
     }
 
-    return (price - (price * discountRate) / 100).toFixed(2);
+    return Number((price - (price * discountRate) / 100).toFixed(2));
   })
   price: number;
 
   @Expose()
   @Transform(({ obj }) => {
     const price = Number(obj.price);
-    const discountRate = Number(obj.discountRate);
+    const discountRate = Number(obj.discountRate || 0);
 
-    if (!discountRate || discountRate <= 0) {
-      return null;
-    }
-
-    return price;
+    return discountRate > 0 ? price : null;
   })
-  priceBeforeDiscount: number;
+  priceBeforeDiscount: number | null;
 
   @Expose()
   @Type(() => ProductVariantResponseDto)

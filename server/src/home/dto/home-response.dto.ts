@@ -1,4 +1,5 @@
 import { Expose, Transform, Type } from 'class-transformer';
+import { Steps } from 'src/common/utils/enum';
 import { PackageResponseDto } from 'src/package/dto/package-response.dto';
 import {
   ProductResponseDto,
@@ -26,6 +27,12 @@ export class HomeStepResponseDto {
   type: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.data)
+  @Transform(({ obj }) => {
+    if (obj?.type === Steps.PRODUCT) {
+      return obj?.products;
+    } else {
+      return obj?.packages;
+    }
+  })
   data: ProductVariantResponseDto[] | PackageResponseDto[];
 }

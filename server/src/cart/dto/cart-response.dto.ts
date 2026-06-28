@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { Steps } from 'src/common/utils/enum';
+import { BillingCycle, Steps } from 'src/common/utils/enum';
 
 export class CartProductItemDto {
   @Expose()
@@ -51,6 +51,9 @@ export class CartPlanItemDto {
 
   @Expose()
   icon: string | null;
+
+  @Expose()
+  billingCycle: BillingCycle;
 
   @Expose()
   price: number;

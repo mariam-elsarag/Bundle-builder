@@ -1,3 +1,4 @@
+import { HomeStep } from 'src/home/entities/step.entities';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Variant } from './variant.entity';
-import { Category } from 'src/categories/entities/category.entity';
 
 @Entity()
 export class Product {
@@ -42,8 +42,8 @@ export class Product {
   })
   variants: Variant[];
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  @ManyToOne(() => HomeStep, (step) => step.products)
+  step: HomeStep;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

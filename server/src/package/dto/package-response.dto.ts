@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { FeatureResponseDto } from './feature-response.dto';
 
 export class PackageResponseDto {
@@ -12,10 +12,33 @@ export class PackageResponseDto {
   subtitle: string;
 
   @Expose()
+  icon: string | null;
+
+  @Expose()
+  @Transform(({ obj }) => {
+    const price = Number(obj.price);
+    const discountRate = Number(obj.discountRate);
+
+    if (!discountRate || discountRate <= 0) {
+      return price;
+    }
+
+    return (price - (price * discountRate) / 100).toFixed(2);
+  })
   price: number;
 
   @Expose()
-  discountRate: number;
+  @Transform(({ obj }) => {
+    const price = Number(obj.price);
+    const discountRate = Number(obj.discountRate);
+
+    if (!discountRate || discountRate <= 0) {
+      return null;
+    }
+
+    return price;
+  })
+  priceBeforeDiscount: number;
 
   @Expose()
   billingCycle: string;

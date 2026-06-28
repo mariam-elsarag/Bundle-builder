@@ -7,10 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "./assets/style/index.css";
 import App from "./App.jsx";
+import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
     <ToastContainer
       position="top-right"
       autoClose={3000}

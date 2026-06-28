@@ -13,6 +13,10 @@ const Counter = ({
       active: "bg-neutral-50 cursor-pointer",
       disabled: "border-[2px] border-disabled bg-white cursor-default",
     },
+    secondary: {
+      active: "bg-white cursor-pointer ",
+      disabled: "bg-white",
+    },
   };
 
   const iconStyle = {

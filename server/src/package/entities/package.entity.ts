@@ -4,10 +4,12 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Feature } from './feature.entity';
+import { HomeStep } from 'src/home/entities/step.entities';
 
 @Entity()
 export class Package {
@@ -48,6 +50,9 @@ export class Package {
     cascade: true,
   })
   features: Feature[];
+
+  @ManyToOne(() => HomeStep, (step) => step.packages)
+  step: HomeStep;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
-import { HomeModule } from './home/home.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { CartModule } from './cart/cart.module';
+import { HomeModule } from './home/home.module';
 import { PackageModule } from './package/package.module';
+import { ProductsModule } from './products/products.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -34,8 +33,6 @@ import { PackageModule } from './package/package.module';
     UsersModule,
 
     ProductsModule,
-
-    CategoriesModule,
 
     HomeModule,
 

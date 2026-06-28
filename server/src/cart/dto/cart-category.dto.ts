@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import {
   CartItemDto,
   CartPlanItemDto,
@@ -12,7 +12,7 @@ export class CartCategoryDto {
   @Expose()
   name: string;
 
-  @Expose()
+  @Exclude()
   order: number;
 
   @Expose()

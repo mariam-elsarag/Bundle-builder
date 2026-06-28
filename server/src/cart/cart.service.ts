@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cart } from './entities/cart.entity';
-import { Repository } from 'typeorm';
-import { CartItem } from './entities/cart-item.entity';
-import { Category } from 'src/categories/entities/category.entity';
+import { plainToInstance } from 'class-transformer';
 import { INITIAL_CART, INITIAL_CART_PACKAGE } from 'src/common/utils/const';
-import { CartDto } from './dto/cart.dto';
-import { CartCategoryDto } from './dto/cart-category.dto';
-import { Package } from 'src/package/entities/package.entity';
 import { Steps } from 'src/common/utils/enum';
+import { HomeStep } from 'src/home/entities/step.entities';
+import { Package } from 'src/package/entities/package.entity';
+import { Product } from 'src/products/entities/product.entity';
+import { Variant } from 'src/products/entities/variant.entity';
+import { Repository } from 'typeorm';
+import { CartCategoryDto } from './dto/cart-category.dto';
+import { CartDto } from './dto/cart.dto';
+import { UpdateCartDto } from './dto/update-cart.dto';
+import { CartItem } from './entities/cart-item.entity';
+import { Cart } from './entities/cart.entity';
 
 @Injectable()
 export class CartService {
@@ -22,8 +26,13 @@ export class CartService {
     @InjectRepository(CartItem)
     private readonly cartItemRepository: Repository<CartItem>,
 
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(HomeStep)
+    private readonly stepRepository: Repository<HomeStep>,
+
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Variant)
+    private readonly variantRepository: Repository<Variant>,
   ) {}
 
   async getCartByVisitorId(visitorId: string) {
@@ -31,7 +40,7 @@ export class CartService {
       where: { visitorId },
       relations: {
         items: {
-          product: { category: true },
+          product: { step: true },
           variant: true,
           package: true,
         },
@@ -41,12 +50,125 @@ export class CartService {
     if (!cart) {
       cart = await this.createInitialCart(visitorId);
     }
+    // return cart;
+    const cartData = this.toCartDto(cart);
+    return plainToInstance(CartDto, cartData, {
+      excludeExtraneousValues: true,
+    });
+  }
 
-    return this.toCartDto(cart);
+  async updateCart(visitorId: string, id: number, body: UpdateCartDto) {
+    const cart = await this.cartRepository.findOne({
+      where: { visitorId, id },
+      relations: {
+        items: {
+          product: true,
+          variant: true,
+          package: true,
+        },
+      },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const incomingKeys = new Set<string>();
+
+    for (const dto of body.items) {
+      const key = dto.packageId
+        ? `package-${dto.packageId}`
+        : `product-${dto.productId}-${dto.variantId ?? 0}`;
+
+      incomingKeys.add(key);
+
+      const cartItem = cart.items.find((item) => {
+        if (dto.packageId) {
+          return item.package?.id === dto.packageId;
+        }
+
+        return (
+          item.product?.id === dto.productId &&
+          (item.variant?.id ?? null) === (dto.variantId ?? null)
+        );
+      });
+
+      if (cartItem) {
+        if (dto.quantity <= 0) {
+          await this.cartItemRepository.remove(cartItem);
+        } else {
+          cartItem.quantity = dto.quantity;
+          await this.cartItemRepository.save(cartItem);
+        }
+        continue;
+      }
+
+      if (dto.quantity <= 0) continue;
+
+      const newItem = this.cartItemRepository.create({
+        cart,
+        quantity: dto.quantity,
+      });
+
+      if (dto.packageId) {
+        const pkg = await this.packageRepository.findOneBy({
+          id: dto.packageId,
+        });
+
+        if (!pkg) {
+          throw new NotFoundException(`Package ${dto.packageId} not found`);
+        }
+
+        newItem.package = pkg;
+        newItem.type = Steps.PLAN;
+      } else {
+        const product = await this.productRepository.findOne({
+          where: { id: dto.productId },
+        });
+
+        if (!product) {
+          throw new NotFoundException(`Product ${dto.productId} not found`);
+        }
+
+        newItem.product = product;
+        newItem.type = Steps.PRODUCT;
+
+        if (dto.variantId) {
+          const variant = await this.variantRepository.findOne({
+            where: {
+              id: dto.variantId,
+              product: { id: dto.productId },
+            },
+            relations: { product: true },
+          });
+
+          if (!variant) {
+            throw new NotFoundException(`Variant ${dto.variantId} not found`);
+          }
+
+          newItem.variant = variant;
+        }
+      }
+
+      await this.cartItemRepository.save(newItem);
+    }
+
+    // remove items not sent
+    for (const item of cart.items) {
+      const key = item.package
+        ? `package-${item.package.id}`
+        : `product-${item.product?.id}-${item.variant?.id ?? 0}`;
+
+      if (!incomingKeys.has(key)) {
+        await this.cartItemRepository.remove(item);
+      }
+    }
+
+    return this.getCartByVisitorId(visitorId);
   }
 
   private async createInitialCart(visitorId: string): Promise<Cart> {
-    const categories = await this.categoryRepository.find({
+    const steps = await this.stepRepository.find({
       order: { order: 'ASC' },
       relations: { products: { variants: true } },
     });
@@ -59,16 +181,14 @@ export class CartService {
 
     const cartItems: CartItem[] = [];
 
-    // =========================
-    // PRODUCTS
-    // =========================
+    // products
     for (const config of INITIAL_CART) {
-      const category = categories.find((c) => c.order === config.categoryOrder);
+      const step = steps.find((c) => c.order === config.stepOrder);
 
-      if (!category) continue;
+      if (!step) continue;
 
       for (const productConfig of config.products) {
-        const product = category.products?.[productConfig.productIndex];
+        const product = step.products?.[productConfig.productIndex];
 
         if (!product) continue;
 
@@ -87,9 +207,7 @@ export class CartService {
       }
     }
 
-    // =========================
-    // PLAN
-    // =========================
+    // package
     if (defaultPackage) {
       const packageItem = new CartItem();
 
@@ -107,7 +225,7 @@ export class CartService {
       where: { id: cart.id },
       relations: {
         items: {
-          product: { category: true },
+          product: { step: true },
           variant: true,
           package: true,
         },
@@ -121,33 +239,36 @@ export class CartService {
     return createdCart;
   }
 
-  private toCartDto(cart: Cart): CartDto {
+  private toCartDto(cart: Cart) {
     const map = new Map<number, CartCategoryDto>();
+    let plan: CartCategoryDto | null = null;
 
     for (const item of cart.items) {
-      // product
       if (item.type === Steps.PRODUCT && item.product) {
-        const category = item.product.category;
+        const step = item.product.step;
 
-        if (!map.has(category.id)) {
-          map.set(category.id, {
-            id: category.id,
-            name: category.name,
-            order: category.order,
+        if (!map.has(step.id)) {
+          map.set(step.id, {
+            id: step.id,
+            name: step.subTitle,
+            order: step.order,
             items: [],
           });
         }
 
-        map.get(category.id)!.items.push({
+        const price = Number(item.product.price || 0);
+        const discountRate = Number(item.product.discountRate || 0);
+        const hasDiscount = discountRate > 0;
+
+        map.get(step.id)!.items.push({
           id: item.id,
           title: item.product.name,
           productId: item.product.id,
           thumbnail: item.variant?.thumbnail ?? item.product.image,
-          price: Number(item.product.price),
-          priceBeforeDiscount:
-            Number(item.product.discountRate) > 0
-              ? Number(item.product.price)
-              : null,
+          price: hasDiscount
+            ? Number((price - (price * discountRate) / 100).toFixed(2))
+            : price,
+          priceBeforeDiscount: hasDiscount ? price : null,
           variantId: item.variant?.id ?? null,
           variantLabel: item.variant?.label ?? null,
           quantity: item.quantity ?? 1,
@@ -155,40 +276,43 @@ export class CartService {
         });
       }
 
-      //  package
       if (item.type === Steps.PLAN && item.package) {
-        if (!map.has(-1)) {
-          map.set(-1, {
-            id: -1,
-            name: 'Plan',
-            order: 0,
-            items: [],
-          });
-        }
+        const price = Number(item.package.price || 0);
+        const discountRate = Number(item.package.discountRate || 0);
+        const hasDiscount = discountRate > 0;
 
-        map.get(-1)!.items.push({
-          id: item.id,
-          title: item.package.title,
-          packageId: item.package.id,
-          quantity: item.quantity ?? 1,
-          price: Number(item.package.price),
-          priceBeforeDiscount:
-            Number(item.package.discountRate) > 0
-              ? Number(item.package.price)
-              : null,
-          icon: item?.package?.icon,
-          type: Steps.PLAN,
-        });
+        plan = {
+          id: item.package.id,
+          name: 'Plan',
+          order: Number.MAX_SAFE_INTEGER,
+          items: [
+            {
+              id: item.id,
+              title: item.package.title,
+              packageId: item.package.id,
+              quantity: item.quantity ?? 1,
+              price: hasDiscount
+                ? Number((price - (price * discountRate) / 100).toFixed(2))
+                : price,
+              priceBeforeDiscount: hasDiscount ? price : null,
+              icon: item.package.icon,
+              billingCycle: item.package.billingCycle,
+              type: Steps.PLAN,
+            },
+          ],
+        };
       }
     }
 
-    const categories = [...map.values()].sort((a, b) => {
-      if (a.id === -1) return 1;
-      if (b.id === -1) return -1;
+    const data = [...map.values()].sort((a, b) => a.order - b.order);
 
-      return a.order - b.order;
-    });
+    if (plan) {
+      data.push(plan);
+    }
 
-    return { categories };
+    return {
+      id: cart.id,
+      data,
+    };
   }
 }

@@ -26,7 +26,7 @@ export class CreateProductDto {
 
   @Type(() => Number)
   @IsNumber({ allowNaN: false })
-  categoryId: number;
+  stepId: number;
 
   @Type(() => Number)
   @IsNumber(

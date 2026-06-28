@@ -1,11 +1,10 @@
-import Home from "./pages/home/Home";
-import { CartProvider } from "./providers/CartProvider";
+import AppRoute from "./routes/AppRoute";
 
 const App = () => {
   return (
-    <CartProvider>
-      <Home />
-    </CartProvider>
+    <>
+      <AppRoute />
+    </>
   );
 };
 

@@ -1,5 +1,7 @@
 import { Steps } from 'src/common/utils/enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Package } from 'src/package/entities/package.entity';
+import { Product } from 'src/products/entities/product.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class HomeStep {
@@ -20,6 +22,12 @@ export class HomeStep {
 
   @Column({ nullable: true })
   icon: string;
+
+  @OneToMany(() => Product, (product) => product.step)
+  products: Product[];
+
+  @OneToMany(() => Package, (pkg) => pkg.step)
+  packages: Package[];
 
   @Column('simple-array', { nullable: true })
   categoryIds: number[];

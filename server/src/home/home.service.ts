@@ -22,45 +22,30 @@ export class HomeService {
   ) {}
   async getHome() {
     const steps = await this.stepRepository.find({
-      order: { order: 'ASC' },
+      order: {
+        order: 'ASC',
+        products: {
+          variants: {
+            id: 'ASC',
+          },
+        },
+        packages: {
+          features: {
+            order: 'ASC',
+          },
+        },
+      },
+      relations: {
+        products: {
+          variants: true,
+        },
+        packages: {
+          features: true,
+        },
+      },
     });
 
-    const [products, packages] = await Promise.all([
-      this.productRepository.find({
-        relations: { variants: true, category: true },
-        order: { variants: { id: 'ASC' } },
-      }),
-      this.packageRepository.find({
-        relations: { features: true },
-        order: { features: { order: 'ASC' } },
-      }),
-    ]);
-
-    const result = steps.map((step) => {
-      let data: any[] = [];
-      if (step.type === Steps.PRODUCT) {
-        const ids = step.categoryIds?.map(Number) || [];
-
-        const filtered = products.filter((p) => ids.includes(p.category.id));
-        data = plainToInstance(ProductResponseDto, filtered, {
-          excludeExtraneousValues: true,
-        });
-      }
-      if (step.type === Steps.PLAN) {
-        data = packages.map((p) =>
-          plainToInstance(PackageResponseDto, p, {
-            excludeExtraneousValues: true,
-          }),
-        );
-      }
-
-      return {
-        ...step,
-        data,
-      };
-    });
-
-    return plainToInstance(HomeStepResponseDto, result, {
+    return plainToInstance(HomeStepResponseDto, steps, {
       excludeExtraneousValues: true,
     });
   }
