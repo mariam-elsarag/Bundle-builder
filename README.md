@@ -1,5 +1,9 @@
 # Bundle Builder
 
+## 📷 Screenshots & Demo
+
+![Home](./client/demo/home.png)
+
 ---
 
 ## 🚀 Project Setup
@@ -15,7 +19,7 @@ cd bundle-builder
 
 ## ⚙️ Backend Setup
 
-### 1.Install dependencies
+### 1. Install dependencies
 
 ```bash
 cd backend
@@ -24,7 +28,7 @@ npm install
 
 ### 2. Environment setup
 
-if env not exist
+If **.env** does not exist, create it:
 
 ```env
 DATABASE_URL=""
@@ -39,7 +43,7 @@ If you change the backend port, make sure to also update the frontend API config
 ### 3. Run backend
 
 ```bash
-npm run dev:start
+npm run start:dev
 ``
 ```
 
