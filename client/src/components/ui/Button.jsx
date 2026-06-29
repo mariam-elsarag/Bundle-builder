@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Button = ({
   text,
@@ -8,7 +9,9 @@ const Button = ({
   size = "lg",
   ariaLabel,
   className,
+  to,
 }) => {
+  const navigate = useNavigate();
   const sizes = {
     lg: "h-12 rounded-sm px-4 py-[13px] gap-2 headline_lg",
     md: "h-[39px] px-6 py-[5px] gap-2.5 rounded-[7px] title_xl",
@@ -19,7 +22,14 @@ const Button = ({
   };
   return (
     <button
-      onClick={handleClick}
+      onClick={() => {
+        if (handleClick) {
+          handleClick();
+        }
+        if (to) {
+          navigate(to);
+        }
+      }}
       className={`flex items-center justify-center text-center  ${styles[variant ?? "primary"]} ${className ?? ""} ${sizes[size ?? "lg"]} ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
       aria-label={ariaLabel}
       disabled={disabled}

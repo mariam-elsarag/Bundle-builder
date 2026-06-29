@@ -5,8 +5,10 @@ import { useCart } from "../../../providers/CartProvider";
 import axiosInstance from "../../../services/axiosInstance";
 import { API } from "../../../services/api";
 import Spinner from "../../../components/feedback/Spinner";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const {
     totalSavings,
     totalPrice,
@@ -14,7 +16,9 @@ const Checkout = () => {
     handleSaveCart,
     loadingSaveBtn,
   } = useCart();
-
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-1">
@@ -41,7 +45,11 @@ const Checkout = () => {
         </figure>
         <div className="flex flex-col gap-1 ">
           <p className="title_sm pt-2.5 text-tertiary-500 text-center -tracking-[.06px]">{`Congrats! You’re saving $${totalSavings} on your security bundle!`}</p>
-          <Button text="Checkout" className="w-full" />
+          <Button
+            handleClick={handleCheckout}
+            text="Checkout"
+            className="w-full"
+          />
         </div>
       </div>
       <button

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 
 function useGetData(endpoint, setValue) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -22,7 +22,9 @@ function useGetData(endpoint, setValue) {
     }
   };
   useEffect(() => {
-    fetchData();
+    if (endpoint) {
+      fetchData();
+    }
   }, [endpoint]);
 
   return { data, setData, loading, fetchData, error };

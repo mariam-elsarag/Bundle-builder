@@ -45,3 +45,33 @@ export const MinusIcon = ({
     </svg>
   );
 };
+export const EmptyIcon = ({
+  width = "64",
+  height = "64",
+  fill = "var(--color-neutral-500)",
+}) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M58.6668 32H42.6668L37.3335 40H26.6668L21.3335 32H5.3335"
+        stroke={fill}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M14.5335 13.6267L5.3335 32V48C5.3335 49.4145 5.8954 50.771 6.89559 51.7712C7.89579 52.7714 9.25234 53.3333 10.6668 53.3333H53.3335C54.748 53.3333 56.1045 52.7714 57.1047 51.7712C58.1049 50.771 58.6668 49.4145 58.6668 48V32L49.4668 13.6267C49.0253 12.7381 48.3446 11.9903 47.5014 11.4674C46.6581 10.9445 45.6857 10.6672 44.6935 10.6667H19.3068C18.3146 10.6672 17.3422 10.9445 16.4989 11.4674C15.6557 11.9903 14.975 12.7381 14.5335 13.6267Z"
+        stroke={fill}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};

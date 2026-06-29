@@ -10,5 +10,7 @@
 11 404 ✅
 10- responsive ✅
 13- loader ✅
+12- readme ✅
 
-12- readme
+14- error page
+15- checkout fake page
