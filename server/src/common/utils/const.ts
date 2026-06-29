@@ -20,5 +20,5 @@ export const INITIAL_CART = [
 ];
 
 export const INITIAL_CART_PACKAGE = {
-  packageId: 2,
+  packageId: 1,
 };

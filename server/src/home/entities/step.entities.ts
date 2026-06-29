@@ -28,10 +28,4 @@ export class HomeStep {
 
   @OneToMany(() => Package, (pkg) => pkg.step)
   packages: Package[];
-
-  @Column('simple-array', { nullable: true })
-  categoryIds: number[];
-
-  @Column('simple-array', { nullable: true })
-  packageIds?: number[];
 }

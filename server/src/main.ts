@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import helmet from 'node_modules/helmet/index.mjs';
+import helmet from 'helmet';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 

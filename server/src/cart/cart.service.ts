@@ -170,18 +170,31 @@ export class CartService {
   private async createInitialCart(visitorId: string): Promise<Cart> {
     const steps = await this.stepRepository.find({
       order: { order: 'ASC' },
-      relations: { products: { variants: true } },
+      relations: {
+        products: {
+          variants: true,
+          step: true,
+        },
+      },
     });
 
     const [defaultPackage] = await this.packageRepository.find({
-      where: { id: INITIAL_CART_PACKAGE.packageId },
+      order: { id: 'ASC' },
+      take: 1,
     });
 
     const cart = await this.cartRepository.save({ visitorId });
 
     const cartItems: CartItem[] = [];
 
-    // products
+    for (const step of steps) {
+      step.products = (step.products || []).sort((a, b) => a.id - b.id);
+
+      for (const product of step.products) {
+        product.variants = (product.variants || []).sort((a, b) => a.id - b.id);
+      }
+    }
+
     for (const config of INITIAL_CART) {
       const step = steps.find((c) => c.order === config.stepOrder);
 
@@ -192,22 +205,24 @@ export class CartService {
 
         if (!product) continue;
 
+        const variant =
+          product.variants?.[productConfig.variantIndex] ??
+          product.variants?.[0];
+
         const item = new CartItem();
         item.cart = cart;
         item.product = product;
         item.quantity = productConfig.quantity ?? 1;
         item.type = Steps.PRODUCT;
 
-        if (product.variants?.length) {
-          const variant = product.variants[productConfig.variantIndex];
-          if (variant) item.variant = variant;
+        if (variant) {
+          item.variant = variant;
         }
 
         cartItems.push(item);
       }
     }
 
-    // package
     if (defaultPackage) {
       const packageItem = new CartItem();
 
@@ -225,7 +240,9 @@ export class CartService {
       where: { id: cart.id },
       relations: {
         items: {
-          product: { step: true },
+          product: {
+            step: true,
+          },
           variant: true,
           package: true,
         },

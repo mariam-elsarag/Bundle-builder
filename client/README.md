@@ -15,7 +15,7 @@
 
 ## Environment variables
 
-Create a `.env` file in the project root (or set these variables in your deployment environment).
+Create a `.env` file in the project root .
 
 ```bash
 VITE_REACT_APP_BASE_URL="http://localhost:8000/"
