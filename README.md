@@ -28,8 +28,6 @@ npm install
 
 ### 2. Environment setup
 
-If **.env** does not exist, create it:
-
 ```env
 DATABASE_URL=""
 ```
@@ -40,7 +38,13 @@ The default backend port is **8000**.
 
 If you change the backend port, make sure to also update the frontend API configuration accordingly to ensure proper communication between frontend and backend.
 
-### 3. Run backend
+### 3. Seed the database
+
+```bash
+npm run seed
+```
+
+### 4. Run backend
 
 ```bash
 npm run start:dev
