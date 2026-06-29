@@ -13,6 +13,7 @@
 Create a `.env` file in the project root:
 
 ```env
+NODE_ENV=development
 DATABASE_URL=<your_postgresql_connection_string>
 ```
 

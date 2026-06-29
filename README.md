@@ -29,6 +29,7 @@ npm install
 ### 2. Environment setup
 
 ```env
+NODE_ENV=development
 DATABASE_URL=""
 ```
 
